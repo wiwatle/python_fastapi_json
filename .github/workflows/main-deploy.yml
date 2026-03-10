@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12' # ปรับเป็นเวอร์ชันที่ Stable
+          python-version: '3.14' # ปรับเป็นเวอร์ชันที่ Stable
 
       - name: Create virtual environment and install dependencies
         run: |
