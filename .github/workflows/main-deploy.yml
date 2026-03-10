@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r ./require_py/requirements.txt
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
