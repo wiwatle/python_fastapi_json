@@ -1,26 +1,18 @@
 name: Deploy Python FastAPI to Azure
 
 env:
-  AZURE_WEBAPP_NAME: 'python-fastapi-json'    # set this to the name of your Azure Web App
-  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-
+  AZURE_WEBAPP_NAME: 'python-fastapi-json'
+  AZURE_WEBAPP_PACKAGE_PATH: '.' 
 
 on:
   push:
     branches:
-      - main  # Adjust this to your default branch
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-    environment:
-      name: 'Development'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,15 +20,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.12' # ปรับเป็นเวอร์ชันที่ Stable
 
-      - name: Install dependencies
+      - name: Create virtual environment and install dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r ./require_py/requirements.txt
+          # หากต้องการส่งไฟล์ lib ขึ้นไปด้วย อาจต้องทำขั้นตอน Zip เพิ่มเติม 
+          # หรือตั้งค่าที่ Azure ให้รัน build automation (SCM_DO_BUILD_DURING_DEPLOYMENT)
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your Azure Web App name
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
