@@ -32,8 +32,6 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          python -m pip install fastapi
-          python -m pip install "uvicorn[standard]"
           python -m pip install --upgrade pip
           pip install -r ./require_py/requirements.txt
           # หากต้องการส่งไฟล์ lib ขึ้นไปด้วย อาจต้องทำขั้นตอน Zip เพิ่มเติม 
@@ -44,4 +42,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+         
