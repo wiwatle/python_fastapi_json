@@ -36,6 +36,7 @@ jobs:
           pip install -r ./require_py/requirements.txt
           # หากต้องการส่งไฟล์ lib ขึ้นไปด้วย อาจต้องทำขั้นตอน Zip เพิ่มเติม 
           # หรือตั้งค่าที่ Azure ให้รัน build automation (SCM_DO_BUILD_DURING_DEPLOYMENT)
+          python -m pip freeze | grep uvicorn
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
