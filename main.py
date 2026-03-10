@@ -34,11 +34,11 @@ def write_db(data):
 
 # --- Routes ---
 
-@app.get("/Products", response_model=List[Products])
+@app.get("/products", response_model=List[Products])
 def get_items():
     return read_db()
 
-@app.post("/Products", response_model=Products)
+@app.post("/products", response_model=Products)
 def create_item(item: Products):
     db = read_db()
     if any(i['id'] == item.id for i in db):
@@ -47,7 +47,7 @@ def create_item(item: Products):
     write_db(db)
     return item
 
-@app.put("/Products/{item_id}", response_model=Products)
+@app.put("/products/{item_id}", response_model=Products)
 def update_item(item_id: int, updated_item: Products):
     db = read_db()
     for index, item in enumerate(db):
@@ -57,7 +57,7 @@ def update_item(item_id: int, updated_item: Products):
             return updated_item
     raise HTTPException(status_code=404, detail="Products not found")
 
-@app.delete("/Products/{item_id}")
+@app.delete("/products/{item_id}")
 def delete_item(item_id: int):
     db = read_db()
     new_db = [i for i in db if i['id'] != item_id]
