@@ -3,6 +3,7 @@ name: Deploy Python FastAPI to Azure
 env:
   AZURE_WEBAPP_NAME: 'python-fastapi-json'
   AZURE_WEBAPP_PACKAGE_PATH: '.' 
+  SCM_DO_BUILD_DURING_DEPLOYMENT: true
 
 on:
   push:
