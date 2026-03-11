@@ -1,6 +1,5 @@
 fastapi
-uvicorn[standard]
-uvicorn-worker
+uvicorn
 uvloop
 httptools
 gunicorn
