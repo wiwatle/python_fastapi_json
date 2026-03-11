@@ -1,45 +1,55 @@
-name: Deploy Python FastAPI to Azure
-
-env:
-  AZURE_WEBAPP_NAME: 'python-fastapi-json'
-  AZURE_WEBAPP_PACKAGE_PATH: '.' 
+name: Build and Deploy Python App
 
 on:
   push:
     branches:
-      - main
-      
+      - main  # Trigger on pushes to the main branch
+
+env:
+  AZURE_WEBAPP_NAME: 'python-fastapi-json' # Set this to your app name
+  PYTHON_VERSION: '3.12'
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-    environment:
-      name: 'Development'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12' # ปรับเป็นเวอร์ชันที่ Stable
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Create virtual environment and install dependencies
+      - name: Create venv and install dependencies
         run: |
-          python -m venv antenv
-          source antenv/bin/activate
-          python -m pip install --upgrade pip
-          pip install -r ./require_py/requirements.txt
-          # หากต้องการส่งไฟล์ lib ขึ้นไปด้วย อาจต้องทำขั้นตอน Zip เพิ่มเติม 
-          # หรือตั้งค่าที่ Azure ให้รัน build automation (SCM_DO_BUILD_DURING_DEPLOYMENT)
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r require_py/requirements.txt
 
-      - name: Deploy to Azure Web App
+      # Optional: Run tests here
+      # - name: Run Tests
+      #   run: |
+      #     source venv/bin/activate
+      #     pytest
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: .  # Uploads the entire root directory
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
+
+      - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          
