@@ -4,6 +4,11 @@
 
 name: Build and deploy Python app to Azure Web App - python-fastapi-json
 
+env:
+  AZURE_WEBAPP_NAME: 'python-fastapi-json'
+  AZURE_WEBAPP_PACKAGE_PATH: '.' 
+
+
 on:
   push:
     branches:
@@ -61,17 +66,10 @@ jobs:
         with:
           name: python-app
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.__clientidsecretname__ }}
-          tenant-id: ${{ secrets.__tenantidsecretname__ }}
-          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
-          app-name: 'python-fastapi-json'
-          slot-name: 'Production'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           
