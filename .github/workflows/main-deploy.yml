@@ -29,8 +29,8 @@ jobs:
 
       - name: Create virtual environment and install dependencies
         run: |
-          python -m venv .antenv
-          source .antenv/bin/activate
+          python -m venv antenv
+          source antenv/bin/activate
           python -m pip install --upgrade pip
           pip install -r ./require_py/requirements.txt
           # หากต้องการส่งไฟล์ lib ขึ้นไปด้วย อาจต้องทำขั้นตอน Zip เพิ่มเติม 
