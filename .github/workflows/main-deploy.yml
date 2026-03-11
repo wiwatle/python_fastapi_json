@@ -35,14 +35,11 @@ jobs:
         run: |
           python -m venv antenv
           source antenv/bin/activate
-          python -m pip install --upgrade pip
-          pip install setup
-          pip install --target="./.python_packages/lib/site-packages" -r ./requirements.txt
-          echo "Installing Requirements"
-          sh requirements.sh
-          pip install fastapi uvicorn
-          echo "The uvicorn version installed is:"
-          uvicorn --version
+          python -m pip install fastapi
+          python -m pip install uvicorn
+          python -m pip install gunicorn
+          python -m pip install httptools
+          python -m pip install uvloop
                 
       # By default, when you enable GitHub CI/CD integration through the Azure portal, the platform automatically sets the SCM_DO_BUILD_DURING_DEPLOYMENT application setting to true. This triggers the use of Oryx, a build engine that handles application compilation and dependency installation (e.g., pip install) directly on the platform during deployment. Hence, we exclude the antenv virtual environment directory from the deployment artifact to reduce the payload size. 
       - name: Upload artifact for deployment jobs
