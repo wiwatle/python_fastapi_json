@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -27,14 +28,22 @@ jobs:
         with:
           python-version: '3.12' # ปรับเป็นเวอร์ชันที่ Stable
 
-      - name: Create virtual environment and install dependencies
+      - name: Create and start virtual environment
         run: |
-          python -m venv antenv
-          source antenv/bin/activate
           python -m pip install --upgrade pip
-          pip install -r ./require_py/requirements.txt
-          # หากต้องการส่งไฟล์ lib ขึ้นไปด้วย อาจต้องทำขั้นตอน Zip เพิ่มเติม 
-          # หรือตั้งค่าที่ Azure ให้รัน build automation (SCM_DO_BUILD_DURING_DEPLOYMENT)
+          pip install pipenv
+          pipenv sync --dev        
+
+      - name: Create requirements.txt
+        run: |          
+          pipenv requirements > ./src/require_py/requirements.txt
+      
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-app
+          path: |
+            ./src/require_py
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
